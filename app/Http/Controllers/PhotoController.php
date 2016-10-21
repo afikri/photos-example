@@ -8,6 +8,9 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Photo;
 
+use Intervention\Image\Facades\Image as Image;
+// use Intervention\Image\ImageManager;
+
 class PhotoController extends Controller
 {
     /**
@@ -46,6 +49,7 @@ class PhotoController extends Controller
         $files[1] = $request->file('photo_1');
 
         $destinationPath = 'uploads/';
+        $thumbnailPath = 'uploads/thumbnail/';
         
         $fileName0 = time().$files[0]->getClientOriginalName();
         $fileName1 = time().$files[1]->getClientOriginalName();
@@ -55,6 +59,11 @@ class PhotoController extends Controller
 
         $photo->photo_0 = $destinationPath.$fileName0;
         $photo->photo_1 = $destinationPath.$fileName1;
+
+        //make thumbnail of first photo
+        $thumbnail = Image::make($destinationPath.$fileName0);
+        $thumbnail->resize(480,360);
+        $thumbnail->save($thumbnailPath.'tn-'.$fileName0);
 
         $photo->save();
         return redirect('photos');
