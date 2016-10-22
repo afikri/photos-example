@@ -20,7 +20,7 @@ class PhotoController extends Controller
      */
     public function index()
     {
-        $photos = Photo::all();		
+        $photos = Photo::all();
         return view('photos.index', compact('photos'));
     }
 
@@ -44,13 +44,13 @@ class PhotoController extends Controller
     {
         //if success
       	$photo = new Photo;
-		$photo->title = $request->input('title');
+		    $photo->title = $request->input('title');
         $files[0] = $request->file('photo_0');
         $files[1] = $request->file('photo_1');
 
         $destinationPath = 'uploads/';
         $thumbnailPath = 'uploads/thumbnail/';
-        
+
         $fileName0 = time().$files[0]->getClientOriginalName();
         $fileName1 = time().$files[1]->getClientOriginalName();
 
@@ -64,6 +64,8 @@ class PhotoController extends Controller
         $thumbnail = Image::make($destinationPath.$fileName0);
         $thumbnail->resize(480,360);
         $thumbnail->save($thumbnailPath.'tn-'.$fileName0);
+
+        $photo->thumb = $thumbnailPath.'tn-'.$fileName0;
 
         $photo->save();
         return redirect('photos');
